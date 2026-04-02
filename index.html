@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ghost Bridge | Portal</title>
+    <style>
+        /* Base Styles - Minimalist & Glassmorphism */
+        :root { 
+            --bg: #020617; /* Very Dark Slate */
+            --glass: rgba(30, 41, 59, 0.4); /* Glassmorphism basis */
+            --accent: #38bdf8; /* Blue accent */
+            --text-deliver: #7dd3fc; /* Deliver text color */
+            --text-receive: #e2e8f0; /* Receive text color */
+        }
+
+        body { 
+            margin: 0; padding: 0; background: var(--bg); color: white; 
+            font-family: 'Inter', system-ui, sans-serif; height: 100vh;
+            overflow: hidden; /* Full screen experience */
+            display: flex; flex-direction: column; /* Stack vertically by default */
+        }
+
+        /* The Hub - The container for the blocks */
+        .hub {
+            display: flex; flex-grow: 1; /* Take all available vertical space */
+            flex-direction: column; /* MOBILE DEFAULT: Stack Top/Bottom */
+            height: 100%;
+        }
+
+        /* Base Card Style (Bento style) */
+        .bento-card {
+            flex: 1; /* Grow evenly, taking 50% height on mobile (by default flex-direction) */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-decoration: none; color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px); /* Glassmorphism */
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 2rem;
+        }
+
+        /* Deliver Block Styles */
+        #deliver {
+            background-color: var(--glass);
+            border-bottom: 2px solid rgba(125, 211, 252, 0.1);
+        }
+        #deliver h1 { color: var(--text-deliver); }
+
+        /* Receive Block Styles */
+        #receive {
+            background-color: rgba(30, 41, 59, 0.6); /* Slightly darker */
+            border-top: 2px solid rgba(226, 232, 240, 0.1);
+        }
+        #receive h1 { color: var(--text-receive); }
+
+        /* Icon and text styling */
+        .icon { font-size: 3rem; margin-bottom: 1rem; }
+        h1 { margin: 0; font-size: 2.2rem; font-weight: 800; letter-spacing: -0.025em; text-transform: uppercase; }
+        p { font-size: 0.85rem; opacity: 0.6; margin-top: 0.75rem; font-weight: normal; }
+
+        /* Interaction */
+        .bento-card:hover {
+            transform: scale(0.98); /* Slight shrink effect */
+            background-color: rgba(56, 189, 248, 0.05); /* Blue glow on hover */
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        /* RESPONSIVE DESIGN FOR LAPTOP/DESKTOP */
+        @media (min-width: 900px) {
+            .hub {
+                flex-direction: row; /* DESKTOP: Side-by-Side */
+            }
+            .bento-card {
+                flex: 1; /* Take 50% width on desktop */
+                height: 100%; /* Take 100% height on desktop */
+            }
+            #deliver {
+                border-bottom: none;
+                border-right: 2px solid rgba(125, 211, 252, 0.1);
+            }
+            #receive {
+                border-top: none;
+                border-left: 2px solid rgba(226, 232, 240, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hub">
+        <a href="assist.html" class="bento-card" id="deliver">
+            <span class="icon">🛰️</span>
+            <h1>Deliver</h1>
+            <p>Activate command console</p>
+        </a>
+        <a href="receiver.html" class="bento-card" id="receive">
+            <span class="icon">📱</span>
+            <h1>Receive</h1>
+            <p>Diagnostic data stream</p>
+        </a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>System Diagnostic</title>
+    <style>
+        body { 
+            background: #ffffff; color: #000000; 
+            font-family: -apple-system, sans-serif; 
+            font-size: 22px; font-weight: bold;
+            margin: 0; padding: 0; height: 100vh; overflow: hidden; 
+        }
+        #container {
+            width: 100%; max-width: 600px; margin: 0 auto; height: 100vh;
+            display: flex; flex-direction: column; overflow-y: auto;
+            scroll-behavior: smooth;
+            -ms-overflow-style: none; scrollbar-width: none; 
+        }
+        #container::-webkit-scrollbar { display: none; }
+        #log { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 40px; }
+        .entry { padding: 18px 25px; border-bottom: 2px solid #f1f5f9; animation: slide 0.3s ease-out; }
+        @keyframes slide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .time { color: #94a3b8; font-family: monospace; font-size: 12px; margin-bottom: 4px; display: block; font-weight: normal; }
+        #cursor { color: #f1f5f9; padding: 20px; font-size: 30px; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="log"></div>
+        <div id="cursor">_</div>
+    </div>
+
+    <script>
+        const API = 'https://ghost-bridge-xyvu.onrender.com';
+        let lastTs = 0;
+        let currentSess = "";
+
+        async function sync() {
+            try {
+                const r = await fetch(API + '?nocache=' + Date.now());
+                const json = await r.json();
+
+                if (json.session && json.session !== currentSess) {
+                    document.getElementById('log').innerHTML = "";
+                    currentSess = json.session;
+                    lastTs = 0;
+                }
+
+                if (json.data && json.data.length > 0) {
+                    json.data.forEach(item => {
+                        if (item.ts > lastTs) {
+                            const div = document.createElement('div');
+                            div.className = 'entry';
+                            const timeStr = new Date(item.ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+                            div.innerHTML = `<span class=\"time\">${timeStr}</span><span class=\"msg\">${item.msg}</span>`;
+                            document.getElementById('log').appendChild(div);
+                            lastTs = item.ts;
+                            
+                            const c = document.getElementById('container');
+                            c.scrollTop = c.scrollHeight;
+                        }
+                    });
+                }
+            } catch (e) {}
+        }
+
+        setInterval(sync, 1000);
+
+        if ('wakeLock' in navigator) {
+            navigator.wakeLock.request('screen').catch(()=>{});
+        }
+    </script>
+</body>
+</html>
